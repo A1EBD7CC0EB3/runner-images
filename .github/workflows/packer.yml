@@ -49,7 +49,7 @@ jobs:
             ubuntu2204-docker.pkr.hcl
   scan:
     runs-on: packer
-    #needs: build
+    needs: build
     steps:
       - name: Snyk scan
         env:
