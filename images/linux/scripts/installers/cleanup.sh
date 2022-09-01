@@ -10,9 +10,11 @@ rm -rf /tmp/*
 rm -rf /root/.cache
 
 # journalctl
-if command -v journalctl; then
-    journalctl --rotate
-    journalctl --vacuum-time=1s
+if [ "${PACKER_BUILDER_TYPE}" != "docker" ]; then
+    if command -v journalctl; then
+        journalctl --rotate
+        journalctl --vacuum-time=1s
+    fi
 fi
 
 # delete all .gz and rotated file
