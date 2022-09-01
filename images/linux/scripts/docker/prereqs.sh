@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 if [ "${PACKER_BUILDER_TYPE}" == "docker" ]; then
     apt-get update 
     apt-get install -y apt-utils
