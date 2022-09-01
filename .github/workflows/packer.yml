@@ -5,7 +5,7 @@ name: Packer build
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "packer-docker" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -48,5 +48,5 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           docker scan --login --token ${SNYK_TOKEN}
-          docker scan docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-image
+          docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-image
 
