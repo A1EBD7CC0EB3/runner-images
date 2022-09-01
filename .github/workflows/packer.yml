@@ -54,4 +54,3 @@ jobs:
         run: |
           docker scan --login --token ${SNYK_TOKEN}
           docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-image
-
