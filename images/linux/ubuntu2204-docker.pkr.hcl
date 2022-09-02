@@ -284,7 +284,7 @@ build {
   # Load brew with profile and bashrc
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-    scripts         = [ "${path.root}/scripts/docker/homebrew-path.sh" ]
+    scripts         = [ "${path.root}/scripts/docker/homebrew-setup.sh" ]
   }
 
 
