@@ -70,8 +70,8 @@ $markdown += New-MDList -Style Unordered -Lines ($runtimesList | Sort-Object)
 Write-Output "Package Management versions (Some Skipped)"
 $markdown += New-MDHeader "Package Management" -Level 3
 $packageManagementList = @(
-    # (Get-HomebrewVersion),
-    #(Get-CpanVersion), # this hangs because it needs to be configured most likely
+    (Get-HomebrewVersion), # Path added docker/homebrew-setup.sh
+    (Get-CpanVersion), # Configured via docker/cpan-setup.sh
     (Get-GemVersion),
     (Get-MinicondaVersion),
     (Get-NuGetVersion),
