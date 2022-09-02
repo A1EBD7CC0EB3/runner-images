@@ -5,12 +5,17 @@ name: Packer build
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "packer-docker" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+# Cancel old builds on PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -42,11 +47,15 @@ jobs:
             -var "registry_details={ login=\"true\", login_username=\"USERNAME\", login_server = \"ghcr.io\", login_password=\"${DOCKER_PASSWORD}\" }" \
             -var "commit_sha=${COMMIT_SHA}" \
             ubuntu2204-docker.pkr.hcl
-
+  scan:
+    runs-on: packer
+    needs: build
+    steps:
       - name: Snyk scan
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
+          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
           docker scan --login --token ${SNYK_TOKEN}
-          docker scan docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-image
-
+          docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-images:latest
