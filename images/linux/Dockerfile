@@ -141,7 +141,10 @@ RUN sudo ./scripts/docker/cpan-setup.sh
 RUN sudo ./scripts/docker/homebrew-setup.sh
 RUN sudo ./scripts/installers/cleanup.sh
 RUN sudo ./scripts/base/apt-mock-remove.sh
-RUN sudo pwsh -File ${image_folder}/SoftwareReport/SoftwareReport.Generator.ps1 -OutputDirectory ${image_folder}"
+
+# Brew not found -- something is wrong with the PATH and ENV inside powershell :(
+RUN sudo pwsh -File ${image_folder}/SoftwareReport/SoftwareReport.Generator.ps1 -OutputDirectory ${image_folder} \
+ && pwsh -File ${image_folder}/tests/RunAll-Tests.ps1 -OutputDirectory ${var.image_folder}
 RUN sudo ./scripts/installers/post-deployment.sh
 RUN sudo ./scripts/docker/cleanup.sh
 RUN sudo ./scripts/installers/validate-disk-space.sh
