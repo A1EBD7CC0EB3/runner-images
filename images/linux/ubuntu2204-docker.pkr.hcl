@@ -274,6 +274,13 @@ build {
     scripts          = ["${path.root}/scripts/installers/homebrew.sh"]
   }
 
+
+  # Configure CPAN so test doesnt hang
+  provisioner "shell" {
+    environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "DEBIAN_FRONTEND=noninteractive", "INSTALLER_SCRIPT_FOLDER=${var.installer_script_folder}"]
+    execute_command  = "/bin/sh -c '{{ .Vars }} {{ .Path }}'"
+    scripts          = ["${path.root}/scripts/docker/cpan-setup.sh"]
+  }
   # Load brew with profile and bashrc
   provisioner "shell" {
     execute_command = "sudo sh -c '{{ .Vars }} {{ .Path }}'"

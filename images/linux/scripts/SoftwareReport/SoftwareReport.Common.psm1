@@ -149,9 +149,9 @@ function Get-LernaVersion {
 }
 
 function Get-HomebrewVersion {
-    # $result = Get-CommandResult "brew -v"
-    # $result.Output -match "Homebrew (?<version>\d+\.\d+\.\d+)" | Out-Null
-    # $version = $Matches.version
+    $result = Get-CommandResult "brew -v"
+    $result.Output -match "Homebrew (?<version>\d+\.\d+\.\d+)" | Out-Null
+    $version = $Matches.version
     $version = "validation skipped for now"
     return "Homebrew $version"
 }
