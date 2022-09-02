@@ -160,7 +160,8 @@ build {
 
   provisioner "file" {
     destination = "${var.installer_script_folder}/toolset.json"
-    source      = "${path.root}/toolsets/toolset-2204-docker.json"
+    #source      = "${path.root}/toolsets/toolset-2204-docker.json"
+    source      = "${path.root}/toolsets/toolset-2204.json"
   }
 
   provisioner "shell" {
