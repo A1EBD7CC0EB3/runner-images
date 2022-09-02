@@ -97,8 +97,8 @@ if [ "${INSTALLER_SOURCE}" != "dockerfile" ]; then
     ln -s $CHROMIUM_BIN /usr/bin/chromium-browser
 else
     # Cheat and link chrome
-    ln -s /usr/bin/google-chrome chromium-browser /usr/bin/chromium
-    ln -s /usr/bin/google-chrome chromium-browser /usr/bin/chromium-browser
+    ln -s /usr/bin/google-chrome /usr/bin/chromium
+    ln -s /usr/bin/google-chrome /usr/bin/chromium-browser
 fi
 invoke_tests "Browsers" "Chrome"
 invoke_tests "Browsers" "Chromium"
