@@ -41,11 +41,11 @@ COPY ./toolsets/toolset-2204.json ${copy_dir}/installers/toolset.json
 # COPY ./toolsets/toolset-2204.json ${copy_dir}/installers/toolset.json
 
 # Matching packer build even though its gross
-RUN sudo mkdir -p ${copy_dir}/helpers/ \
-    ${copy_dir}/SoftwareReport/ \
-    ${copy_dir}/tests/ \
-    ${copy_dir}/installers/ \
- && sudo ln -s ${copy_dir}/scripts/SoftwareReport/ ${copy_dir}/SoftwareReport \
+# RUN sudo mkdir -p ${copy_dir}/helpers/ \
+#     ${copy_dir}/SoftwareReport/ \
+#     ${copy_dir}/tests/ \
+#     ${copy_dir}/installers/ \
+ RUN sudo ln -s ${copy_dir}/scripts/SoftwareReport/ ${copy_dir}/SoftwareReport \
  && sudo ln -s ${copy_dir}/scripts/tests/ ${copy_dir}/tests \
  && sudo ln -s ${copy_dir}/scripts/helpers/ ${copy_dir}/helpers \
  && sudo ln -s ${copy_dir}/installers/toolset.json ${copy_dir}/scripts/installers/toolset.json
