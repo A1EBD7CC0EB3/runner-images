@@ -79,21 +79,26 @@ echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | tee -a /etc/environment
 
 # Download and unpack Chromium
 # Get Chromium version corresponding to the Google Chrome version
-REVISION=$(GetChromiumRevision $FULL_CHROME_VERSION)
+if [ "${INSTALLER_SOURCE}" != "dockerfile" ]; then
+    REVISION=$(GetChromiumRevision $FULL_CHROME_VERSION)
 
-ZIP_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${REVISION}%2Fchrome-linux.zip?alt=media"
-ZIP_FILE="${REVISION}-chromium-linux.zip"
+    ZIP_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${REVISION}%2Fchrome-linux.zip?alt=media"
+    ZIP_FILE="${REVISION}-chromium-linux.zip"
 
-CHROMIUM_DIR="/usr/local/share/chromium"
-CHROMIUM_BIN="$CHROMIUM_DIR/chrome-linux/chrome"
+    CHROMIUM_DIR="/usr/local/share/chromium"
+    CHROMIUM_BIN="$CHROMIUM_DIR/chrome-linux/chrome"
 
-# Download and unzip Chromium archive
-download_with_retries $ZIP_URL "/tmp" $ZIP_FILE
-mkdir $CHROMIUM_DIR
-unzip -qq /tmp/${ZIP_FILE} -d $CHROMIUM_DIR
+    # Download and unzip Chromium archive
+    download_with_retries $ZIP_URL "/tmp" $ZIP_FILE
+    mkdir $CHROMIUM_DIR
+    unzip -qq /tmp/${ZIP_FILE} -d $CHROMIUM_DIR
 
-ln -s $CHROMIUM_BIN /usr/bin/chromium
-ln -s $CHROMIUM_BIN /usr/bin/chromium-browser
-
+    ln -s $CHROMIUM_BIN /usr/bin/chromium
+    ln -s $CHROMIUM_BIN /usr/bin/chromium-browser
+else
+    # Cheat and link chrome
+    ln -s /usr/bin/google-chrome chromium-browser /usr/bin/chromium
+    ln -s /usr/bin/google-chrome chromium-browser /usr/bin/chromium-browser
+fi
 invoke_tests "Browsers" "Chrome"
 invoke_tests "Browsers" "Chromium"
