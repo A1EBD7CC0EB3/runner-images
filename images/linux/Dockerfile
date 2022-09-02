@@ -130,4 +130,23 @@ RUN sudo ./scripts/installers/pypy.sh
 RUN sudo ./scripts/installers/python.sh
 RUN sudo ./scripts/installers/graalvm.sh
 
+
+RUN sudo pwsh -f ./scripts/installers/Install-Toolset.ps1 \
+ && sudo pwsh -f  ./scripts/installers/Configure-Toolset.ps1
+
+RUN sudo ./scripts/installers/pipx-packages.sh
+
+RUN sudo ./scripts/installers/homebrew.sh
+RUN sudo ./scripts/docker/cpan-setup.sh
+RUN sudo ./scripts/docker/homebrew-setup.sh
+RUN sudo ./scripts/installers/cleanup.sh
+RUN sudo ./scripts/base/apt-mock-remove.sh
+RUN sudo pwsh -File ${image_folder}/SoftwareReport/SoftwareReport.Generator.ps1 -OutputDirectory ${image_folder}"
+RUN sudo ./scripts/installers/post-deployment.sh
+RUN sudo ./scripts/docker/cleanup.sh
+RUN sudo ./scripts/installers/validate-disk-space.sh
+RUN sudo mkdir -p /etc/vsts \
+ && sudo cp /tmp/ubuntu2204.conf /etc/vsts/machine_instance.conf
+
+
 WORKDIR /
