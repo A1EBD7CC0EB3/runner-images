@@ -111,13 +111,13 @@ $markdown += New-MDList -Style Unordered -Lines ($projectManagementList | Sort-O
 $markdown += New-MDHeader "Tools" -Level 3
 Write-Output "Tools versions (Some Skipped)"
 $toolsList = @(
-    # (Get-AnsibleVersion), # Ansible not found for some reason
-    # (Get-AptFastVersion),
+    (Get-AnsibleVersion), # Ansible not found for some reason
+    (Get-AptFastVersion),
     (Get-AzCopyVersion),
     (Get-BazelVersion),
     (Get-BazeliskVersion),
     (Get-BicepVersion),
-    #(Get-CodeQLBundleVersion),
+    (Get-CodeQLBundleVersion),
     (Get-CMakeVersion),
     #(Get-DockerMobyClientVersion),
     #(Get-DockerMobyServerVersion),
@@ -153,7 +153,7 @@ $toolsList = @(
     (Get-RVersion),
     (Get-SphinxVersion),
     (Get-TerraformVersion),
-    #(Get-YamllintVersion),
+    (Get-YamllintVersion),
     (Get-ZstdVersion)
 )
 
@@ -205,9 +205,9 @@ $markdown += Build-PHPSection
 $markdown += New-MDHeader "Haskell" -Level 3
 Write-Output "Haskell versions (Some Skipped)"
 $markdown += New-MDList -Style Unordered -Lines (@(
-    # (Get-GHCVersion),
-    # (Get-GHCupVersion),
-    # (Get-CabalVersion),
+    (Get-GHCVersion),
+    (Get-GHCupVersion),
+    (Get-CabalVersion),
     (Get-StackVersion)
     ) | Sort-Object
 )
@@ -242,7 +242,7 @@ $browsersAndDriversList = @(
     (Get-ChromiumVersion),
     (Get-EdgeVersion),
     (Get-EdgeDriverVersion)
-    # (Get-SeleniumVersion)
+    (Get-SeleniumVersion)
 )
 
 if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
@@ -270,9 +270,9 @@ $markdown += New-MDList -Style Unordered -Lines @(
 
 # uses env
 Write-Output ".NET Tools versions (Skipped)"
-# $markdown += New-MDHeader ".NET tools" -Level 3
-# $tools = Get-DotnetTools
-# $markdown += New-MDList -Lines $tools -Style Unordered
+$markdown += New-MDHeader ".NET tools" -Level 3
+$tools = Get-DotnetTools
+$markdown += New-MDList -Lines $tools -Style Unordered
 
 
 Write-Output "Databases (Skipped)"
@@ -295,13 +295,13 @@ if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
 
 Write-Output "Cached Tools versions (Skipped)"
 # uses env
-# $markdown += New-MDHeader "Cached Tools" -Level 3
-# $markdown += Build-CachedToolsSection
+$markdown += New-MDHeader "Cached Tools" -Level 3
+$markdown += Build-CachedToolsSection
 
 Write-Output "Env vars (Skipped)"
-# $markdown += New-MDHeader "Environment variables" -Level 4
-# $markdown += Build-GoEnvironmentTable | New-MDTable
-# $markdown += New-MDNewLine
+$markdown += New-MDHeader "Environment variables" -Level 4
+$markdown += Build-GoEnvironmentTable | New-MDTable
+$markdown += New-MDNewLine
 
 $markdown += New-MDHeader "PowerShell Tools" -Level 3
 Write-Output "Powershell version"
@@ -323,14 +323,14 @@ Write-Output "Webserver (Skipped)"
 #  Get-ChildItem : Cannot find path '/ndk' because it does not exist.
 
 Write-Output "Android modules version (Skipped)"
-# $markdown += New-MDHeader "Android" -Level 3
-# $markdown += Build-AndroidTable | New-MDTable
-# $markdown += New-MDNewLine
+$markdown += New-MDHeader "Android" -Level 3
+$markdown += Build-AndroidTable | New-MDTable
+$markdown += New-MDNewLine
 
-Write-Output "Android enviuronment table (Skipped)"
-#$markdown += New-MDHeader "Android Environment table" -Level 4
-#$markdown += Build-AndroidEnvironmentTable | New-MDTable
-#$markdown += New-MDNewLine
+Write-Output "Android environment table (Skipped)"
+$markdown += New-MDHeader "Android Environment table" -Level 4
+$markdown += Build-AndroidEnvironmentTable | New-MDTable
+$markdown += New-MDNewLine
 
 # No docker images in this image
 Write-Output "Cached docker images (Skipped)"

@@ -29,7 +29,15 @@ RUN sudo mv /etc/environment /etc/environment.clean \
 
 LABEL org.opencontainers.image.source https:#github.com/${source_github_repository}
 
-COPY ./scripts ${copy_dir}/scripts
+# TODO: (perhaps) Copy each script right before execution for better caching
+#COPY ./scripts ${copy_dir}/scripts
+
+COPY ./scripts/base/ ${copy_dir}/scripts/base/
+COPY ./scripts/docker/ ${copy_dir}/scripts/docker/
+COPY ./scripts/helpers/ ${copy_dir}/scripts/helpers/
+COPY ./scripts/installers/ ${copy_dir}/scripts/installers/
+COPY ./scripts/tests ${copy_dir}/scripts/tests
+
 COPY ./toolsets/toolset-2204.json ${copy_dir}/installers/toolset.json
 # COPY ./scripts/base/ ${copy_dir}/scripts/base/
 # COPY ./scripts/docker/ ${copy_dir}/scripts/docker/
@@ -45,8 +53,7 @@ COPY ./toolsets/toolset-2204.json ${copy_dir}/installers/toolset.json
 #     ${copy_dir}/SoftwareReport/ \
 #     ${copy_dir}/tests/ \
 #     ${copy_dir}/installers/ \
- RUN sudo ln -s ${copy_dir}/scripts/SoftwareReport/ ${copy_dir}/SoftwareReport \
- && sudo ln -s ${copy_dir}/scripts/tests/ ${copy_dir}/tests \
+ RUN sudo ln -s ${copy_dir}/scripts/tests/ ${copy_dir}/tests \
  && sudo ln -s ${copy_dir}/scripts/helpers/ ${copy_dir}/helpers \
  && sudo ln -s ${copy_dir}/installers/toolset.json ${copy_dir}/scripts/installers/toolset.json
 
@@ -74,6 +81,7 @@ RUN sudo pwsh -f ./scripts/installers/Install-PowerShellModules.ps1 \
  && sudo pwsh -f ./scripts/installers/Install-AzureModules.ps1
 
 # many things
+# Can split to individual copies to improve caching if want to unwind everything
 RUN sudo ./scripts/installers/azcopy.sh
 RUN sudo ./scripts/installers/azure-cli.sh
 RUN sudo ./scripts/installers/azure-devops-cli.sh
@@ -132,7 +140,10 @@ RUN sudo ./scripts/installers/graalvm.sh
 
 
 RUN sudo pwsh -f ./scripts/installers/Install-Toolset.ps1 \
- && sudo pwsh -f  ./scripts/installers/Configure-Toolset.ps1
+ && sudo pwsh -f  ./scripts/installers/Configure-Toolset.ps1 \
+ && rm -rf /imagegeneration/*.tar.gz* \
+ && rm -f /imagegeneration/minikube-linux-amd64 \
+ && rm -f /imagegeneration/*.deb*
 
 RUN sudo ./scripts/installers/pipx-packages.sh
 
@@ -143,13 +154,34 @@ RUN sudo ./scripts/installers/cleanup.sh
 RUN sudo ./scripts/base/apt-mock-remove.sh
 
 # Brew not found -- something is wrong with the PATH and ENV inside powershell :(
+#   Turns out our base image set PATH as an ENV and we can't simply UNSET it :((
+#    May need to dump this to file
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/.local/bin:/opt/pipx_bin:/usr/local/.ghcup/bin:/etc/skel/.cargo/bin:/etc/skel/.dotnet/tools"
+
+# RUN sudo sed -i 's;PATH=.*;PATH='$PATH';g' \
+# /home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/.local/bin:/opt/pipx_bin:/usr/local/.ghcup/bin:/etc/skel/.cargo/bin:/etc/skel/.dotnet/tools;g' /etc/environment \
+#     && echo source /etc/environment >> ~/.bashrc
+
+# missing $HOME/.config/composer/vendor/bin
+# Could also add /opt/hostedtoolcache/CodeQL/0.0.0-20220825/x64/codeql/codeql
+
+# Updating tests wont bust cache
+COPY ./scripts/SoftwareReport/ ${copy_dir}/scripts/SoftwareReport/
+RUN sudo ln -s ${copy_dir}/scripts/SoftwareReport/ ${copy_dir}/SoftwareReport
+
 RUN sudo pwsh -File ${image_folder}/SoftwareReport/SoftwareReport.Generator.ps1 -OutputDirectory ${image_folder} \
- && pwsh -File ${image_folder}/tests/RunAll-Tests.ps1 -OutputDirectory ${var.image_folder}
-RUN sudo ./scripts/installers/post-deployment.sh
+ && sudo pwsh -File ${image_folder}/tests/RunAll-Tests.ps1 -OutputDirectory ${image_folder}
+
+# Mocking file created by packer
+# RUN sudo touch post-generation
+# This CHMODs files after the fact. Bad to do in docker
+# RUN sudo ./scripts/installers/post-deployment.sh
 RUN sudo ./scripts/docker/cleanup.sh
 RUN sudo ./scripts/installers/validate-disk-space.sh
-RUN sudo mkdir -p /etc/vsts \
- && sudo cp /tmp/ubuntu2204.conf /etc/vsts/machine_instance.conf
+# RUN sudo mkdir -p /etc/vsts \
+# COPY ubuntu2204.conf /etc/vsts/machine_instance.conf
 
+RUN sudo sed -i 's;PATH=.*;PATH='$PATH';g' /etc/environment \
+ && echo source /etc/environment >> ~/.bashrc
 
 WORKDIR /
