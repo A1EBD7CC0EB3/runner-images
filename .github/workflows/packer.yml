@@ -1,5 +1,5 @@
 # This is a basic workflow to help you get started with Actions
-name: Packer build
+name: Docker build
 
 # Controls when the workflow will run
 on:
@@ -39,18 +39,35 @@ jobs:
       - name: Packer build Docker image & upload
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_BUILDKIT: 1
         run: |
           cd images/linux
           export COMMIT_SHA="$(git rev-parse --short HEAD)"
-          packer init  ubuntu2204-docker.pkr.hcl
-          packer build \
-            -var "registry_details={ login=\"true\", login_username=\"USERNAME\", login_server = \"ghcr.io\", login_password=\"${DOCKER_PASSWORD}\" }" \
-            -var "commit_sha=${COMMIT_SHA}" \
-            ubuntu2204-docker.pkr.hcl
+          
+          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin 
+
+          docker buildx build \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA} \
+          .
+
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest \
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA}
+
+          # packer init  ubuntu2204-docker.pkr.hcl
+          # packer build \
+          #   -var "registry_details={ login=\"true\", login_username=\"USERNAME\", login_server = \"ghcr.io\", login_password=\"${DOCKER_PASSWORD}\" }" \
+          #   -var "commit_sha=${COMMIT_SHA}" \
+          #   ubuntu2204-docker.pkr.hcl
   scan:
     runs-on: packer
     needs: build
     steps:
+      - uses: actions/checkout@v3
       - name: Snyk scan
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -58,4 +75,6 @@ jobs:
         run: |
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
           docker scan --login --token ${SNYK_TOKEN}
-          docker scan --json --accept-license ghcr.io/a1ebd7cc0eb3/runner-images:latest
+          docker scan --json --accept-license --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest
+          # Would like to output serif
+          
