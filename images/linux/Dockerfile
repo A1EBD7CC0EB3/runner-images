@@ -177,7 +177,8 @@ RUN sudo pwsh -File ${image_folder}/SoftwareReport/SoftwareReport.Generator.ps1 
 # RUN sudo touch post-generation
 # This CHMODs files after the fact. Bad to do in docker
 # RUN sudo ./scripts/installers/post-deployment.sh
-RUN sudo ./scripts/docker/cleanup.sh
+# Cleanup script not useful at end of dockerfile
+# RUN sudo ./scripts/docker/cleanup.sh
 RUN sudo ./scripts/installers/validate-disk-space.sh
 # RUN sudo mkdir -p /etc/vsts \
 # COPY ubuntu2204.conf /etc/vsts/machine_instance.conf
