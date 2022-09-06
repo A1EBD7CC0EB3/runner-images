@@ -53,9 +53,9 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA} \
           .
 
-          docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest \
-          docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
-          docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA}
 
           # packer init  ubuntu2204-docker.pkr.hcl
@@ -77,4 +77,4 @@ jobs:
           docker scan --login --token ${SNYK_TOKEN}
           docker scan --json --accept-license --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest
           # Would like to output serif
-          
+
