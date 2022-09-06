@@ -111,7 +111,7 @@ $markdown += New-MDList -Style Unordered -Lines ($projectManagementList | Sort-O
 $markdown += New-MDHeader "Tools" -Level 3
 Write-Output "Tools versions (Some Skipped)"
 $toolsList = @(
-    (Get-AnsibleVersion), # Ansible not found for some reason
+    (Get-AnsibleVersion),
     (Get-AptFastVersion),
     (Get-AzCopyVersion),
     (Get-BazelVersion),
@@ -241,7 +241,7 @@ $browsersAndDriversList = @(
     (Get-ChromeDriverVersion),
     (Get-ChromiumVersion),
     (Get-EdgeVersion),
-    (Get-EdgeDriverVersion)
+    (Get-EdgeDriverVersion),
     (Get-SeleniumVersion)
 )
 
