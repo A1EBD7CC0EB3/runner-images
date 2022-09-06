@@ -16,11 +16,8 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > $g
 echo "deb [arch=amd64 signed-by=$gpg_key] $REPO_URL stable main" > $repo_path
 
 apt-get update
-if [ "${PACKER_BUILDER_TYPE}" == "docker" ]; then
-    apt-get install -y --no-install-recommends microsoft-edge-stable
-else
-    apt-get install --no-install-recommends microsoft-edge-stable
-fi
+apt-get install -y --no-install-recommends microsoft-edge-stable
+
 rm $gpg_key
 rm $repo_path
 
