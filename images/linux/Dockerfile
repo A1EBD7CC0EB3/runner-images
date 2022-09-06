@@ -141,9 +141,10 @@ RUN sudo ./scripts/installers/graalvm.sh
 
 RUN sudo pwsh -f ./scripts/installers/Install-Toolset.ps1 \
  && sudo pwsh -f  ./scripts/installers/Configure-Toolset.ps1 \
- && rm -rf /imagegeneration/*.tar.gz* \
- && rm -f /imagegeneration/minikube-linux-amd64 \
- && rm -f /imagegeneration/*.deb*
+ && sudo rm -rf /imagegeneration/*.tar.gz \
+ && sudo rm -rf /imagegeneration/scripts/installers/*.tar.gz \
+ && sudo rm -f /imagegeneration/minikube-linux-amd64
+
 
 RUN sudo ./scripts/installers/pipx-packages.sh
 
