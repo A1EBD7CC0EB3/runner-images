@@ -19,21 +19,48 @@ concurrency:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build-base:
     runs-on: packer
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - name: Build base image
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_BUILDKIT: 1
         run: |
-          cd images/linux
-          chmod +x create-base-image.sh
-          ./create-base-image.sh
+          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
+
+          git clone https://github.com/actions-runner-controller/actions-runner-controller.git
+          cd actions-runner-controller/runner
+
+          export COMMIT_SHA="$(git rev-parse --short HEAD)"
+
+          sed -i 's/ubuntu:20.04/ubuntu:22.04/g' actions-runner-dind.dockerfile
+          docker buildx build \
+            --build-arg "TARGETPLATFORM=linux/amd64" \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:latest \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22 \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:22.04 \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA} \
+            --label LABEL "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --file actions-runner-dind.dockerfile \
+            .
+
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:latest
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:22.04
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA}
+
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: packer
+    needs: build-base
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
       - name: Packer build Docker image & upload
@@ -51,6 +78,7 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA} \
+            --label LABEL "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
           .
 
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
@@ -66,7 +94,7 @@ jobs:
 
   scan-base:
     runs-on: packer
-    needs: build
+    needs: build-base
     steps:
       - uses: actions/checkout@v3
       - name: Snyk scan base image
@@ -82,7 +110,7 @@ jobs:
             --json \
             --group-issues \
             --severity=high \
-            runner-base:22.04 \
+            ghcr.io/a1ebd7cc0eb3/runner-base:latest \
             | tee base-scan.json \
             || true
           # Would like to output serif
