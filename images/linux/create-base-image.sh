@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/bash -e
 
 git clone https://github.com/actions-runner-controller/actions-runner-controller.git
 cd actions-runner-controller/runner
 sed -i 's/ubuntu:20.04/ubuntu:22.04/g' actions-runner-dind.dockerfile
 docker build \
-    --build-arg "TARGET_PLATFORM=linux/amd64" \
+    --build-arg "TARGETPLATFORM=linux/amd64" \
     -t runner-base:22.04 \
     -f actions-runner-dind.dockerfile \
     .
