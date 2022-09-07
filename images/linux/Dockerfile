@@ -1,4 +1,4 @@
-FROM runner-base:22.04
+FROM ghcr.io/a1ebd7cc0eb3/runner-base:22.04
 
 ARG source_github_repository="A1EBD7CC0EB3/runner-images"
 ARG helper_script_folder="/imagegeneration/scripts/helpers"
@@ -27,7 +27,7 @@ RUN sudo mv /etc/environment /etc/environment.clean \
  && echo PACKER_BUILDER_TYPE="${packer_builder_type}" | sudo tee -a /etc/environment \
  && echo INSTALLER_SOURCE="${installer_source}" | sudo tee -a /etc/environment 
 
-LABEL org.opencontainers.image.source https:#github.com/${source_github_repository}
+LABEL org.opencontainers.image.source "https://github.com/${source_github_repository}"
 
 # TODO: (perhaps) Copy each script right before execution for better caching
 #COPY ./scripts ${copy_dir}/scripts
