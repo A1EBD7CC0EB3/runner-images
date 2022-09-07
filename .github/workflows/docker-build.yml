@@ -44,7 +44,7 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:22.04 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA} \
-            --label LABEL "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
             --file actions-runner-dind.dockerfile \
             .
 
@@ -78,7 +78,7 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA} \
-            --label LABEL "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
           .
 
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
