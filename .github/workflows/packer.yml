@@ -63,6 +63,31 @@ jobs:
           #   -var "registry_details={ login=\"true\", login_username=\"USERNAME\", login_server = \"ghcr.io\", login_password=\"${DOCKER_PASSWORD}\" }" \
           #   -var "commit_sha=${COMMIT_SHA}" \
           #   ubuntu2204-docker.pkr.hcl
+
+  scan-base:
+    runs-on: packer
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Snyk scan base image
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
+          docker scan --login --token ${SNYK_TOKEN}
+          # Scan exit code is 1 if finds results, force to be zero
+          docker scan \
+            --accept-license \
+            --json \
+            --group-issues \
+            --severity=high \
+            runner-base:22.04 \
+            | tee base-scan.json \
+            || true
+          # Would like to output serif
+
+
   scan:
     runs-on: packer
     needs: build
@@ -75,6 +100,17 @@ jobs:
         run: |
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
           docker scan --login --token ${SNYK_TOKEN}
-          docker scan --accept-license --json --group-issues --severity=high --exclude-base --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest
+          # Scan exit code is 1 if finds results, force to be zero
+          docker scan \
+            --accept-license \
+            --json \
+            --group-issues \
+            --severity=high \
+            --exclude-base \
+            --file images/linux/Dockerfile \
+            ghcr.io/a1ebd7cc0eb3/runner-images:latest \
+            | tee runner-scan.json \
+            || true
+          # docker scan --accept-license --json --group-issues --severity=high --exclude-base --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest || true
           # Would like to output serif
 
