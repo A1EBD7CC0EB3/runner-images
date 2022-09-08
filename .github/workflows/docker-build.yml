@@ -93,7 +93,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: packer
-    needs: build-base
+    needs: [set-vars, build-base]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
@@ -136,7 +136,7 @@ jobs:
 
   scan-base:
     runs-on: packer
-    needs: build-base
+    needs: [set-vars, build-base]
     steps:
       - uses: actions/checkout@v3
       - name: Snyk scan base image
@@ -159,7 +159,7 @@ jobs:
 
   export-readme:
     runs-on: packer
-    needs: build
+    needs: [set-vars, build]
     steps:
       - uses: actions/checkout@v3
       - name: Get installed files
@@ -186,7 +186,7 @@ jobs:
     #docker buildx build --build-arg "tag=6f81e09" --file Dockerfile.copy-out --output generated .
   scan:
     runs-on: packer
-    needs: build
+    needs: [set-vars, build]
     steps:
       - uses: actions/checkout@v3
       - name: Snyk scan
