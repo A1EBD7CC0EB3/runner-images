@@ -25,7 +25,7 @@ jobs:
       - name: Get tags
         id: gather_data
         run: |
-          TAG_DATE=date +'%Y%d%m'
+          TAG_DATE=$(date +'%Y%d%m')
           TAG_RUN_ID=${GITHUB_RUN_ID}
           TAG_SHORT_SHA=${GITHUB_SHA:0:8}
 
