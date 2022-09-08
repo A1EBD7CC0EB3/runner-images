@@ -175,6 +175,8 @@ jobs:
     needs: [set-vars, build]
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: "with_dockerfile"
       - name: Get installed files
         env: 
           TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
