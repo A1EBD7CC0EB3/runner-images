@@ -21,10 +21,6 @@ env:
   BASE_UBUNTU_VERSION: "20.04"
   TARGET_UBUNTU_VERSION: "22.04"
 
-defaults:
-  run:
-    working-directory: "./images/linux"
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   set-vars:
@@ -32,8 +28,6 @@ jobs:
     steps:
       - name: Get tags
         id: gather_data
-        working-directory: "."
-
         run: |
           TAG_DATE=day-$(date +'%Y%d%m')
           TAG_RUN_ID=run-${GITHUB_RUN_ID}
@@ -113,6 +107,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Packer build Docker image & upload
+        working-directory: "./images/linux"
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_BUILDKIT: 1
@@ -178,6 +173,7 @@ jobs:
         with:
           ref: "with_dockerfile"
       - name: Get installed files
+        working-directory: "./images/linux"
         env: 
           TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
         run: |
