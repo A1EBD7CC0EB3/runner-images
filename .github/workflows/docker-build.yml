@@ -19,7 +19,32 @@ concurrency:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  set-vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tags
+        id: gather_data
+        run: |
+          TAG_DATE=date +'%Y%d%m'
+          TAG_RUN_ID=${GITHUB_RUN_ID}
+          TAG_SHORT_SHA=${GITHUB_SHA:0:8}
+
+          echo "::set-output name=TAG_DATE::${TAG_DATE}"
+          echo "::set-output name=TAG_RUN_ID::${TAG_RUN_ID}"
+          echo "::set-output name=TAG_SHORT_SHA::${TAG_SHORT_SHA}"
+
+          echo TAG_DATE=${TAG_DATE}
+          echo TAG_RUN_ID=${TAG_RUN_ID}
+          echo TAG_SHORT_SHA=${TAG_SHORT_SHA}
+
+
+    outputs:
+      TAG_DATE: ${{ steps.gather_data.outputs.TAG_DATE }}
+      TAG_RUN_ID: ${{ steps.gather_data.outputs.TAG_RUN_ID }}
+      TAG_SHORT_SHA: ${{ steps.gather_data.outputs.TAG_SHORT_SHA }}
+
   build-base:
+    needs: set-vars
     runs-on: packer
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -29,13 +54,18 @@ jobs:
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_BUILDKIT: 1
+          TAG_DATE: ${{ needs.set-vars.outputs.TAG_DATE }}
+          TAG_RUN_ID: ${{ needs.set-vars.outputs.TAG_RUN_ID }}
+          TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
+
         run: |
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
 
           git clone https://github.com/actions-runner-controller/actions-runner-controller.git
           cd actions-runner-controller/runner
 
-          export COMMIT_SHA="$(git rev-parse --short HEAD)"
+          # Gather your own SHA for the base image (upstream repo)
+          export COMMIT_SHA="base-$(git rev-parse --short HEAD)"
 
           sed -i 's/ubuntu:20.04/ubuntu:22.04/g' actions-runner-dind.dockerfile
           docker buildx build \
@@ -44,6 +74,9 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:22.04 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_DATE} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_RUN_ID} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_SHORT_SHA} \
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
             --file actions-runner-dind.dockerfile \
             .
@@ -51,7 +84,10 @@ jobs:
           docker push ghcr.io/a1ebd7cc0eb3/runner-base:latest
           docker push ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22
           docker push ghcr.io/a1ebd7cc0eb3/runner-base:22.04
-          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${COMMIT_SHA} 
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_DATE}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_RUN_ID}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-base:${TAG_SHORT_SHA}
 
   # This workflow contains a single job called "build"
   build:
@@ -67,9 +103,11 @@ jobs:
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_BUILDKIT: 1
+          TAG_DATE: ${{ needs.set-vars.outputs.TAG_DATE }}
+          TAG_RUN_ID: ${{ needs.set-vars.outputs.TAG_RUN_ID }}
+          TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
         run: |
           cd images/linux
-          export COMMIT_SHA="$(git rev-parse --short HEAD)"
           
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin 
 
@@ -77,14 +115,18 @@ jobs:
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
             --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_DATE} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_RUN_ID} \
+            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
           .
 
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04
-          docker push ghcr.io/a1ebd7cc0eb3/runner-images:${COMMIT_SHA}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_DATE}
+          docker push ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_RUN_ID}
 
           # packer init  ubuntu2204-docker.pkr.hcl
           # packer build \
@@ -115,7 +157,33 @@ jobs:
             || true
           # Would like to output serif
 
+  export-readme:
+    runs-on: packer
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get installed files
+        env: 
+          TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
+        run: |
+          docker buildx build \
+            --build-arg "tag=${TAG_SHORT_SHA}" \
+            --file Dockerfile.copy-out \
+            --output generated \
+            .
+          
+          cp generated/Ubuntu-Readme.md ./Ubuntu-Docker-Readme.md
+          rm -rf generated
 
+          git add Ubuntu-Docker-Readme.md
+          git config --global user.name 'Actions'
+          git config --global user.email 'actions@users.noreply.github.com'
+          git commit -am 'Update package list'
+          git push
+
+
+
+    #docker buildx build --build-arg "tag=6f81e09" --file Dockerfile.copy-out --output generated .
   scan:
     runs-on: packer
     needs: build
@@ -125,6 +193,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
         run: |
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
           docker scan --login --token ${SNYK_TOKEN}
@@ -136,7 +205,7 @@ jobs:
             --severity=high \
             --exclude-base \
             --file images/linux/Dockerfile \
-            ghcr.io/a1ebd7cc0eb3/runner-images:latest \
+            ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
             | tee runner-scan.json \
             || true
           # docker scan --accept-license --json --group-issues --severity=high --exclude-base --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest || true

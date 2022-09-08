@@ -1,0 +1,6 @@
+ARG image=ghcr.io/a1ebd7cc0eb3/runner-images
+ARG tag=latest
+FROM ${image}:${tag} as main
+
+FROM scratch as export-stage
+COPY --from=main /imagegeneration/Ubuntu-Readme.md . 
