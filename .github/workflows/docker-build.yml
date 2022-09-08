@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Get tags
         id: gather_data
+        working-directory: "."
+
         run: |
           TAG_DATE=day-$(date +'%Y%d%m')
           TAG_RUN_ID=run-${GITHUB_RUN_ID}
