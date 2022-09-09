@@ -31,7 +31,7 @@ jobs:
         run: |
           TAG_DATE=day-$(date +'%Y%d%m')
           TAG_RUN_ID=run-${GITHUB_RUN_ID}
-          TAG_SHORT_SHA=${GITHUB_SHA:0:8}
+          TAG_SHORT_SHA=${GITHUB_SHA:0:7}
 
           echo "::set-output name=TAG_DATE::${TAG_DATE}"
           echo "::set-output name=TAG_RUN_ID::${TAG_RUN_ID}"
@@ -138,9 +138,16 @@ jobs:
             fi
 
             let "RETRIES=RETRIES-1"
+            if [ "${RETRIES}" == "0" ] && [ "${EXIT_CODE}" != "0" ]; then
+              echo "ERROR: Docker image build failed ${RETRIES} times"
+              exit ${EXIT_CODE}
+            else
+              echo "ERROR: Docker image build failed, trying again"
+            fi
             sleep 10
           done
           set -e
+
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04
