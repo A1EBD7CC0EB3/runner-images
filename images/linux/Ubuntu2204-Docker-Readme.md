@@ -32,7 +32,7 @@
 - Pip3 22.0.2
 - Pipx 1.1.0
 - RubyGems 3.3.5
-- Vcpkg  (build from master \<a291bcad8>)
+- Vcpkg  (build from master \<8e3595fad>)
 - Yarn 1.22.19
 
 #### Environment variables
@@ -42,7 +42,7 @@
 | VCPKG_INSTALLATION_ROOT | /usr/local/share/vcpkg |
 
 ### Project Management
-- Lerna 5.5.0
+- Lerna 5.5.1
 
 ### Tools
 - Ansible 2.13.3
@@ -50,7 +50,7 @@
 - AzCopy 10.16.0 (available by `azcopy` and `azcopy10` aliases)
 - Bazel 5.3.0
 - Bazelisk 1.13.2
-- Bicep 0.9.1
+- Bicep 0.10.13
 - Buildah 1.23.1
 - CMake 3.24.1
 - CodeQL Action Bundle 2.10.4
@@ -82,12 +82,12 @@
 - SVN 1.14.1
 - Terraform 1.2.9
 - yamllint 1.27.1
-- yq 4.27.3
+- yq 4.27.5
 - zstd 1.5.2 (homebrew)
 
 ### CLI Tools
 - Alibaba Cloud CLI 3.0.125
-- AWS CLI 2.7.30
+- AWS CLI 2.7.31
 - AWS CLI Session manager plugin 1.2.339.0
 - AWS SAM CLI 1.56.1
 - Azure CLI (azure-cli) 2.40.0 (installation method: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
@@ -95,7 +95,7 @@
 - GitHub CLI 2.15.0
 - Google Cloud SDK 369.0.0 (apt source repository: https://packages.cloud.google.com/apt)
 - Hub CLI 2.14.2
-- Netlify CLI 11.5.1
+- Netlify CLI 11.7.1
 - OpenShift CLI 4.11.3
 - ORAS CLI 0.14.1
 - Vercel CLI 28.2.3
@@ -145,7 +145,7 @@
 - Google Chrome 105.0.5195.102
 - ChromeDriver 105.0.5195.52
 - Google Chrome
-- Microsoft Edge 105.0.1343.27 (apt source repository: https://packages.microsoft.com/repos/edge)
+- Microsoft Edge 105.0.1343.33 (apt source repository: https://packages.microsoft.com/repos/edge)
 - Microsoft Edge WebDriver 105.0.1343.27
 - Selenium server 4.4.0
 
