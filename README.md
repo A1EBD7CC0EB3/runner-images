@@ -1,5 +1,11 @@
 
 # GitHub Actions Runner Images
+**IMPORTANT**: This repository is considered _EXPERIMENTAL_ and images/packages procuded from it carry **no warrenty or support**. 
+
+Use anything contained in this fork at your own risk
+
+
+---
 
 **Table of Contents**
 
