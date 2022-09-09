@@ -106,7 +106,7 @@ jobs:
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: Packer build Docker image & upload
+      - name: Docker build image & upload
         working-directory: "./images/linux"
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -114,20 +114,31 @@ jobs:
           TAG_DATE: ${{ needs.set-vars.outputs.TAG_DATE }}
           TAG_RUN_ID: ${{ needs.set-vars.outputs.TAG_RUN_ID }}
           TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
+          RETRIES: 3
         run: |
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin 
 
-          docker buildx build \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_DATE} \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_RUN_ID} \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
-            --tag ghcr.io/a1ebd7cc0eb3/runner-images:commit-${TAG_SHORT_SHA} \
-            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
-          .
-
+          set +e
+          LOOP="true"
+          while [ ${RETRIES} -gt 0 ] ; do
+            docker buildx build \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_DATE} \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_RUN_ID} \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
+              --tag ghcr.io/a1ebd7cc0eb3/runner-images:commit-${TAG_SHORT_SHA} \
+              --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            .
+            EXIT_CODE=$?
+            if [ "${EXIT_CODE}" == "0" ]; then
+              break
+            fi
+            
+            let "RETRIES=RETRIES-1"
+          done
+          set -e
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:22.04
