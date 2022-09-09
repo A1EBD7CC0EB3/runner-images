@@ -63,37 +63,37 @@ Describe "Rust" {
         }
     }
 }
-Describe "Docker" {
-    It "docker" {
-        "docker --version" | Should -ReturnZeroExitCode
-    }
+# Describe "Docker" {
+#     It "docker" {
+#         "docker --version" | Should -ReturnZeroExitCode
+#     }
 
-    It "docker buildx" {
-        "docker buildx" | Should -ReturnZeroExitCode
-    }
+#     It "docker buildx" {
+#         "docker buildx" | Should -ReturnZeroExitCode
+#     }
 
-    It "docker compose v2" {
-        "docker compose" | Should -ReturnZeroExitCode
-    }
+#     It "docker compose v2" {
+#         "docker compose" | Should -ReturnZeroExitCode
+#     }
 
-    It "docker-credential-ecr-login" {
-        "docker-credential-ecr-login -v" | Should -ReturnZeroExitCode
-    }
+#     It "docker-credential-ecr-login" {
+#         "docker-credential-ecr-login -v" | Should -ReturnZeroExitCode
+#     }
 
-    Context "docker images" {
-        $testCases = (Get-ToolsetContent).docker.images | ForEach-Object { @{ ImageName = $_ } }
+#     Context "docker images" {
+#         $testCases = (Get-ToolsetContent).docker.images | ForEach-Object { @{ ImageName = $_ } }
 
-        It "<ImageName>" -TestCases $testCases {
-           sudo docker images "$ImageName" --format "{{.Repository}}" | Should -Not -BeNullOrEmpty
-        }
-    }
-}
+#         It "<ImageName>" -TestCases $testCases {
+#            sudo docker images "$ImageName" --format "{{.Repository}}" | Should -Not -BeNullOrEmpty
+#         }
+#     }
+# }
 
-Describe "Docker-compose v1" {
-    It "docker-compose" {
-        "docker-compose --version"| Should -ReturnZeroExitCode
-    }
-}
+# Describe "Docker-compose v1" {
+#     It "docker-compose" {
+#         "docker-compose --version"| Should -ReturnZeroExitCode
+#     }
+# }
 
 Describe "Ansible" {
     It "Ansible" {
@@ -188,11 +188,11 @@ Describe "MSSQLCommandLineTools" {
     }
 }
 
-Describe "SqlPackage" {
-    It "sqlpackage" {
-        "sqlpackage /version" | Should -ReturnZeroExitCode
-    }
-}
+# Describe "SqlPackage" {
+#     It "sqlpackage" {
+#         "sqlpackage /version" | Should -ReturnZeroExitCode
+#     }
+# }
 
 Describe "R" {
     It "r" {
