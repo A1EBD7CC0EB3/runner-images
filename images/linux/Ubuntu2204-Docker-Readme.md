@@ -32,7 +32,7 @@
 - Pip3 22.0.2
 - Pipx 1.1.0
 - RubyGems 3.3.5
-- Vcpkg  (build from master \<8e3595fad>)
+- Vcpkg  (build from master \<1ddafcb6f>)
 - Yarn 1.22.19
 
 #### Environment variables
@@ -87,7 +87,7 @@
 
 ### CLI Tools
 - Alibaba Cloud CLI 3.0.125
-- AWS CLI 2.7.31
+- AWS CLI 2.7.30
 - AWS CLI Session manager plugin 1.2.339.0
 - AWS SAM CLI 1.56.1
 - Azure CLI (azure-cli) 2.40.0 (installation method: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
@@ -146,7 +146,7 @@
 - ChromeDriver 105.0.5195.52
 - Google Chrome
 - Microsoft Edge 105.0.1343.33 (apt source repository: https://packages.microsoft.com/repos/edge)
-- Microsoft Edge WebDriver 105.0.1343.27
+- Microsoft Edge WebDriver 105.0.1343.33
 - Selenium server 4.4.0
 
 #### Environment variables
