@@ -119,7 +119,8 @@ jobs:
           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin 
 
           set +e
-          LOOP="true"
+
+          # Sometimes the image fails to build but succeeds when retrying the job, automate that
           while [ ${RETRIES} -gt 0 ] ; do
             docker buildx build \
               --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
@@ -135,8 +136,9 @@ jobs:
             if [ "${EXIT_CODE}" == "0" ]; then
               break
             fi
-            
+
             let "RETRIES=RETRIES-1"
+            sleep 10
           done
           set -e
           docker push ghcr.io/a1ebd7cc0eb3/runner-images:latest
