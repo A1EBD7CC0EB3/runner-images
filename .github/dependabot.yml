@@ -7,11 +7,13 @@ version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/images/linux" # Location of package manifests
+    registries:
+      - ghcr
     target-branch: "with_dockerfile"
     schedule:
       interval: "daily"
 registries:
-  github-octocat:
+  ghrc:
     type: docker-registry
     url: https://ghcr.io
     username: USERNAME
