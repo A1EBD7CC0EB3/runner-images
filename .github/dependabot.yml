@@ -13,7 +13,7 @@ updates:
     schedule:
       interval: "daily"
 registries:
-  ghrc:
+  ghcr:
     type: docker-registry
     url: https://ghcr.io
     username: USERNAME
