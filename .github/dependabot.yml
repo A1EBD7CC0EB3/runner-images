@@ -12,6 +12,7 @@ updates:
     target-branch: "with_dockerfile"
     schedule:
       interval: "daily"
+
 registries:
   ghcr:
     type: docker-registry
