@@ -7,5 +7,6 @@ version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/images/linux" # Location of package manifests
+    target-branch: "with_dockerfile"
     schedule:
       interval: "daily"
