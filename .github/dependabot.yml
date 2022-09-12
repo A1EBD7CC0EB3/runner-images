@@ -10,3 +10,9 @@ updates:
     target-branch: "with_dockerfile"
     schedule:
       interval: "daily"
+    registries:
+      github-octocat:
+        type: docker-registry
+        url: https://ghcr.io
+        username: USERNAME
+        password: ${{secrets.DOCKER_PASSWORD}}
