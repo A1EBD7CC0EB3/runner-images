@@ -217,6 +217,8 @@ jobs:
             git commit -am 'Update package list'
             git push
           fi
+      - name: Update summary
+        run: cat Ubuntu*-Docker-Readme.md >> $GITHUB_STEP_SUMMARY
 
 
 
