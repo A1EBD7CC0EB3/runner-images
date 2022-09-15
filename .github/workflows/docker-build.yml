@@ -221,7 +221,7 @@ jobs:
         working-directory: "./images/linux"
         run: |
           TARGET_FILE="Ubuntu${TARGET_UBUNTU_VERSION//./}-Docker-Readme.md"
-          cat ${TARGET_FILE}.md >> $GITHUB_STEP_SUMMARY
+          cat ${TARGET_FILE} >> $GITHUB_STEP_SUMMARY
 
 
 
