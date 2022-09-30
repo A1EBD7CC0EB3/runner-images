@@ -8,6 +8,9 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    # Run on wednesday at 3am UTC
+    - cron: 0 3 * * 3
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -57,7 +60,7 @@ jobs:
 
       - name: Build base image
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_BUILDKIT: 1
           TAG_DATE: ${{ needs.set-vars.outputs.TAG_DATE }}
           TAG_RUN_ID: ${{ needs.set-vars.outputs.TAG_RUN_ID }}
@@ -110,7 +113,7 @@ jobs:
       - name: Docker build image & upload
         working-directory: "./images/linux"
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_BUILDKIT: 1
           TAG_DATE: ${{ needs.set-vars.outputs.TAG_DATE }}
           TAG_RUN_ID: ${{ needs.set-vars.outputs.TAG_RUN_ID }}
