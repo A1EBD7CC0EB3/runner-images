@@ -74,6 +74,7 @@ jobs:
 
           sed -i "s/ubuntu:${BASE_UBUNTU_VERSION}/ubuntu:${TARGET_UBUNTU_VERSION}/g" actions-runner-dind.dockerfile
           docker buildx build \
+            --no-cache \
             --build-arg "TARGETPLATFORM=linux/amd64" \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:latest \
             --tag ghcr.io/a1ebd7cc0eb3/runner-base:ubuntu22 \
@@ -123,6 +124,7 @@ jobs:
           # Sometimes the image fails to build but succeeds when retrying the job, automate that
           while [ ${RETRIES} -gt 0 ] ; do
             docker buildx build \
+              --no-cache \
               --tag ghcr.io/a1ebd7cc0eb3/runner-images:latest \
               --tag ghcr.io/a1ebd7cc0eb3/runner-images:ubuntu22 \
               --tag ghcr.io/a1ebd7cc0eb3/runner-images:22.04 \
@@ -162,27 +164,27 @@ jobs:
           #   -var "commit_sha=${COMMIT_SHA}" \
           #   ubuntu2204-docker.pkr.hcl
 
-  scan-base:
-    runs-on: packer
-    needs: [set-vars, build-base]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Snyk scan base image
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: |
-          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
-          docker scan --login --token ${SNYK_TOKEN}
-          # Scan exit code is 1 if finds results, force to be zero
-          docker scan \
-            --accept-license \
-            --json \
-            --group-issues \
-            --severity=high \
-            ghcr.io/a1ebd7cc0eb3/runner-base:latest \
-            | tee base-scan.json \
-            || true
+#   scan-base:
+#     runs-on: packer
+#     needs: [set-vars, build-base]
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Snyk scan base image
+#         env:
+#           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#         run: |
+#           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
+#           docker scan --login --token ${SNYK_TOKEN}
+#           # Scan exit code is 1 if finds results, force to be zero
+#           docker scan \
+#             --accept-license \
+#             --json \
+#             --group-issues \
+#             --severity=high \
+#             ghcr.io/a1ebd7cc0eb3/runner-base:latest \
+#             | tee base-scan.json \
+#             || true
           # Would like to output serif
 
   export-readme:
@@ -226,30 +228,30 @@ jobs:
 
 
     #docker buildx build --build-arg "tag=6f81e09" --file Dockerfile.copy-out --output generated .
-  scan:
-    runs-on: packer
-    needs: [set-vars, build]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Snyk scan
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
-        run: |
-          echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
-          docker scan --login --token ${SNYK_TOKEN}
-          # Scan exit code is 1 if finds results, force to be zero
-          docker scan \
-            --accept-license \
-            --json \
-            --group-issues \
-            --severity=high \
-            --exclude-base \
-            --file images/linux/Dockerfile \
-            ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
-            | tee runner-scan.json \
-            || true
-          # docker scan --accept-license --json --group-issues --severity=high --exclude-base --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest || true
-          # Would like to output serif
+#   scan:
+#     runs-on: packer
+#     needs: [set-vars, build]
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Snyk scan
+#         env:
+#           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#           TAG_SHORT_SHA: ${{ needs.set-vars.outputs.TAG_SHORT_SHA }}
+#         run: |
+#           echo ${DOCKER_PASSWORD} | docker login ghcr.io --username USERNAME --password-stdin
+#           docker scan --login --token ${SNYK_TOKEN}
+#           # Scan exit code is 1 if finds results, force to be zero
+#           docker scan \
+#             --accept-license \
+#             --json \
+#             --group-issues \
+#             --severity=high \
+#             --exclude-base \
+#             --file images/linux/Dockerfile \
+#             ghcr.io/a1ebd7cc0eb3/runner-images:${TAG_SHORT_SHA} \
+#             | tee runner-scan.json \
+#             || true
+#           # docker scan --accept-license --json --group-issues --severity=high --exclude-base --file images/linux/Dockerfile ghcr.io/a1ebd7cc0eb3/runner-images:latest || true
+#           # Would like to output serif
 
