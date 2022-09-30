@@ -11,20 +11,20 @@
 - Dash 0.5.11+git20210903+057cd650a4ed-3build1
 - GNU C++ 9.4.0, 10.3.0, 11.2.0
 - GNU Fortran 9.4.0, 10.3.0, 11.2.0
-- Julia 1.8.0
-- Kotlin 1.7.10-release-333
+- Julia 1.8.2
+- Kotlin 1.7.20-release-201
 - Mono 6.12.0.182 (apt source repository: https://download.mono-project.com/repo/ubuntu stable-focal main)
 - MSBuild 16.10.1.31701 (from /usr/lib/mono/msbuild/15.0/bin/MSBuild.dll)
-- Node 16.17.0
+- Node 16.17.1
 - Perl 5.34.0
-- Python 3.10.4
-- Python3 3.10.4
+- Python 3.10.6
+- Python3 3.10.6
 - Ruby 3.0.2p107
 
 ### Package Management
 - cpan 1.64
-- Helm 3.9.4
-- Homebrew 3.6.0
+- Helm 3.10.0
+- Homebrew 3.6.3
 - Miniconda 4.12.0
 - Npm 8.15.0
 - NuGet 6.2.1.2
@@ -32,7 +32,7 @@
 - Pip3 22.0.2
 - Pipx 1.1.0
 - RubyGems 3.3.5
-- Vcpkg  (build from master \<1ddafcb6f>)
+- Vcpkg  (build from master \<2f0a16b5a>)
 - Yarn 1.22.19
 
 #### Environment variables
@@ -42,32 +42,32 @@
 | VCPKG_INSTALLATION_ROOT | /usr/local/share/vcpkg |
 
 ### Project Management
-- Lerna 5.5.1
+- Lerna 5.5.4
 
 ### Tools
-- Ansible 2.13.3
+- Ansible 2.13.4
 - apt-fast 1.9.12
 - AzCopy 10.16.0 (available by `azcopy` and `azcopy10` aliases)
-- Bazel 5.3.0
+- Bazel 5.3.1
 - Bazelisk 1.13.2
-- Bicep 0.10.13
+- Bicep 0.10.61
 - Buildah 1.23.1
-- CMake 3.24.1
-- CodeQL Action Bundle 2.10.4
-- Fastlane 2.209.1
+- CMake 3.24.2
+- CodeQL Action Bundle 2.11.0
+- Fastlane 2.210.1
 - Git 2.37.3 (apt source repository: ppa:git-core/ppa)
 - Git LFS 3.2.0 (apt source repository: https://packagecloud.io/install/repositories/github/git-lfs)
 - Git-ftp 1.6.0
 - Haveged 1.9.14
-- Heroku 7.63.0
+- Heroku 7.63.4
 - jq 1.6
-- Kind 0.15.0
-- Kubectl 1.25.0
+- Kind 0.16.0
+- Kubectl 1.25.2
 - Kustomize 4.5.7
 - Leiningen 2.9.10
 - MediaInfo 21.09
 - Mercurial 6.1.1
-- Minikube 1.26.1
+- Minikube 1.27.0
 - n 9.0.0
 - Newman 5.3.2
 - nvm 0.39.1
@@ -75,30 +75,30 @@
 - Packer 1.8.3
 - Parcel 2.7.0
 - Podman 3.4.4
-- Pulumi 3.39.3
+- Pulumi 3.40.2
 - R 4.2.1
 - Skopeo 1.4.1
 - Sphinx Open Source Search Server 2.2.11
 - SVN 1.14.1
-- Terraform 1.2.9
-- yamllint 1.27.1
+- Terraform 1.3.1
+- yamllint 1.28.0
 - yq 4.27.5
 - zstd 1.5.2 (homebrew)
 
 ### CLI Tools
-- Alibaba Cloud CLI 3.0.125
-- AWS CLI 2.7.30
+- Alibaba Cloud CLI 3.0.127
+- AWS CLI 2.7.35
 - AWS CLI Session manager plugin 1.2.339.0
-- AWS SAM CLI 1.56.1
+- AWS SAM CLI 1.58.0
 - Azure CLI (azure-cli) 2.40.0 (installation method: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
 - Azure CLI (azure-devops) 0.25.0
-- GitHub CLI 2.15.0
+- GitHub CLI 2.16.1
 - Google Cloud SDK 369.0.0 (apt source repository: https://packages.cloud.google.com/apt)
 - Hub CLI 2.14.2
-- Netlify CLI 11.7.1
-- OpenShift CLI 4.11.3
-- ORAS CLI 0.14.1
-- Vercel CLI 28.2.3
+- Netlify CLI 12.0.2
+- OpenShift CLI 4.11.6
+- ORAS CLI 0.15.0
+- Vercel CLI 28.4.5
 
 ### Java
 | Version             | Vendor          | Environment Variable |
@@ -115,9 +115,9 @@
 ### PHP
 | Tool     | Version |
 | -------- | ------- |
-| PHP      | 8.1.9   |
-| Composer | 2.4.1   |
-| PHPUnit  | 8.5.29  |
+| PHP      | 8.1.11  |
+| Composer | 2.4.2   |
+| PHPUnit  | 8.5.30  |
 ```
     Both Xdebug and PCOV extensions are installed, but only Xdebug is enabled.
 ```
@@ -125,29 +125,29 @@
 - Cabal 3.6.2.0
 - GHC 9.4.2
 - GHCup 0.1.18.0
-- Stack 2.7.5
+- Stack 2.9.1
 
 ### Rust Tools
-- Cargo 1.63.0
-- Rust 1.63.0
-- Rustdoc 1.63.0
+- Cargo 1.64.0
+- Rust 1.64.0
+- Rustdoc 1.64.0
 - Rustup 1.25.1
 
 #### Packages
 - Bindgen 0.60.1
 - Cargo audit 0.17.0
-- Cargo clippy 0.1.63
+- Cargo clippy 0.1.64
 - Cargo outdated 0.11.1
 - Cbindgen 0.24.3
 - Rustfmt 1.5.1
 
 ### Browsers and Drivers
-- Google Chrome 105.0.5195.102
-- ChromeDriver 105.0.5195.52
+- Google Chrome 106.0.5249.61
+- ChromeDriver 106.0.5249.61
 - Google Chrome
-- Microsoft Edge 105.0.1343.33 (apt source repository: https://packages.microsoft.com/repos/edge)
-- Microsoft Edge WebDriver 105.0.1343.33
-- Selenium server 4.4.0
+- Microsoft Edge 105.0.1343.53 (apt source repository: https://packages.microsoft.com/repos/edge)
+- Microsoft Edge WebDriver 105.0.1343.53
+- Selenium server 4.5.0
 
 #### Environment variables
 | Name              | Value                               |
@@ -158,10 +158,10 @@
 | SELENIUM_JAR_PATH | /usr/share/java/selenium-server.jar |
 
 ### .NET Core SDK
-- 6.0.400
+- 6.0.401
 
 ### .NET tools
-- nbgv 3.5.109+bdfbd7dea6
+- nbgv 3.5.113+a908c6d9d2
 
 ### Cached Tools
 #### Go
@@ -170,8 +170,8 @@
 - 1.19.1
 
 #### Node.js
-- 14.20.0
-- 16.17.0
+- 14.20.1
+- 16.17.1
 
 #### PyPy
 - 3.7.13 [PyPy 7.3.9]
@@ -201,9 +201,9 @@
 | Module           | Version |
 | ---------------- | ------- |
 | MarkdownPS       | 1.9     |
-| Microsoft.Graph  | 1.11.1  |
+| Microsoft.Graph  | 1.12.2  |
 | Pester           | 5.3.3   |
-| PSScriptAnalyzer | 1.20.0  |
+| PSScriptAnalyzer | 1.21.0  |
 
 #### Az PowerShell Modules
 - 7.5.0
@@ -212,7 +212,7 @@
 | Package Name               | Version                                                                                                                                                |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Android Command Line Tools | 7.0                                                                                                                                                    |
-| Android Emulator           | 31.3.10                                                                                                                                                |
+| Android Emulator           | 31.3.11                                                                                                                                                |
 | Android SDK Build-tools    | 33.0.0<br>32.0.0<br>31.0.0<br>30.0.0 30.0.1 30.0.2 30.0.3<br>29.0.0 29.0.1 29.0.2 29.0.3<br>28.0.0 28.0.1 28.0.2 28.0.3<br>27.0.0 27.0.1 27.0.2 27.0.3 |
 | Android SDK Platform-Tools | 33.0.3                                                                                                                                                 |
 | Android SDK Platforms      | android-33 (rev 2)<br>android-32 (rev 1)<br>android-31 (rev 1)<br>android-30 (rev 3)<br>android-29 (rev 5)<br>android-28 (rev 6)<br>android-27 (rev 3) |
@@ -249,7 +249,7 @@
 | coreutils              | 8.32-4.1ubuntu1                   |
 | curl                   | 7.81.0-1ubuntu1.4                 |
 | dbus                   | 1.12.20-2ubuntu4                  |
-| dnsutils               | 1:9.18.1-1ubuntu1.1               |
+| dnsutils               | 1:9.18.1-1ubuntu1.2               |
 | dpkg                   | 1.21.1ubuntu2.1                   |
 | fakeroot               | 1.28-1ubuntu1                     |
 | file                   | 1:5.41-3                          |
@@ -262,7 +262,7 @@
 | iproute2               | 5.15.0-1ubuntu2                   |
 | iputils-ping           | 3:20211215-1                      |
 | jq                     | 1.6-2.1ubuntu3                    |
-| lib32z1                | 1:1.2.11.dfsg-2ubuntu9            |
+| lib32z1                | 1:1.2.11.dfsg-2ubuntu9.1          |
 | libc++-dev             | 1:14.0-55\~exp2                   |
 | libc++abi-dev          | 1:14.0-55\~exp2                   |
 | libcurl4               | 7.81.0-1ubuntu1.4                 |
