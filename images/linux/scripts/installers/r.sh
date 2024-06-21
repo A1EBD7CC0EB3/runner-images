@@ -10,7 +10,13 @@ wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | gpg
 echo "deb [signed-by=/usr/share/keyrings/rlang.gpg] https://cloud.r-project.org/bin/linux/ubuntu $osLabel-cran40/" > /etc/apt/sources.list.d/rlang.list
 
 apt-get update
-apt-get install r-base
+
+if [ "${PACKER_BUILDER_TYPE}" == "docker" ]; then
+    apt-get install -y r-base
+else
+    apt-get install r-base
+fi
+
 
 rm /etc/apt/sources.list.d/rlang.list
 rm /usr/share/keyrings/rlang.gpg

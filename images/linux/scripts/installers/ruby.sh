@@ -7,8 +7,11 @@
 source $HELPER_SCRIPTS/os.sh
 source $HELPER_SCRIPTS/install.sh
 
-apt-get install ruby-full
-
+if [ "${PACKER_BUILDER_TYPE}" == "docker" ]; then
+    apt-get install -y ruby-full
+else
+    apt-get install ruby-full
+fi
 # Install ruby gems from toolset
 gemsToInstall=$(get_toolset_value ".rubygems[] .name")
 if [ -n "$gemsToInstall" ]; then

@@ -1,12 +1,14 @@
 #!/bin/bash -e
 
 # Stop and disable apt-daily upgrade services;
-systemctl stop apt-daily.timer
-systemctl disable apt-daily.timer
-systemctl disable apt-daily.service
-systemctl stop apt-daily-upgrade.timer
-systemctl disable apt-daily-upgrade.timer
-systemctl disable apt-daily-upgrade.service
+if [ "${PACKER_BUILDER_TYPE}" != "docker" ]; then
+    systemctl stop apt-daily.timer
+    systemctl disable apt-daily.timer
+    systemctl disable apt-daily.service
+    systemctl stop apt-daily-upgrade.timer
+    systemctl disable apt-daily-upgrade.timer
+    systemctl disable apt-daily-upgrade.service
+fi
 
 # Enable retry logic for apt up to 10 times
 echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries
@@ -40,7 +42,7 @@ cat /etc/apt/sources.list
 
 apt-get update
 # Install jq
-apt-get install jq
+apt-get install -y jq
 
 # Install apt-fast using quick-install.sh
 # https://github.com/ilikenwf/apt-fast
